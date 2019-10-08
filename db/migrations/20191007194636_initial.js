@@ -13,6 +13,7 @@ exports.up = function(knex) {
       table.string("color3");
       table.string("color4");
       table.string("color5");
+      table.string("name");
       table.integer("folder_id").unsigned();
       table.foreign("folder_id").references("folders.id");
       table.timestamps(true, true);
