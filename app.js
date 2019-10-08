@@ -4,11 +4,14 @@ const app = express();
 const environment = process.env.NODE_ENV || 'development'
 const configuration = require('./knexfile')[environment]
 const database = require('knex')(configuration)
+const cors = require('cors')
 
 app.locals.title = "Palette Picker";
 
 //leta said something about express.json
-app.use(bodyParser.json())
+
+app.use(cors())
+app.use(express.json())
 
 //get all folders
 app.get("/api/v1/folders", (request, response) => {
