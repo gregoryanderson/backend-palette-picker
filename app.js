@@ -186,3 +186,5 @@ app.get("/api/v1/folders", (request, response) => {
           .catch(error => response.status(500).json({error}))
       }
   })
+
+  module.exports = app;

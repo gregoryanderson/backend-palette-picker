@@ -1,4 +1,4 @@
-const express = require("express");
+// const express = require("express");
 // const app = express();
 const app = require('./app')
 
@@ -186,3 +186,5 @@ app.listen(app.get("port"), () => {
 //         .catch(error => response.status(500).json({error}))
 //     }
 // })
+
+module.exports = app;
