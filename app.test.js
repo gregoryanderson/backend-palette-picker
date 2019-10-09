@@ -201,17 +201,19 @@ describe("Server", () => {
       expect(response.status).toBe(422);
       expect(response.body.error).toEqual(`Expected format { name: <String>. You are missing a name property}`)
 
-  describe("GET /api/v1/palettes", () => {
-    it("should return a 200 and all palettes", async () => {
-      const expectedPalette = await database('palettes').select()
-
-      const res = await request(app).get('/api/v1/palettes');
-      const palettes = res.body;
-
-      expect(res.status).toBe(200)
-      expect(JSON.stringify(palettes)).toEqual(JSON.stringify(expectedPalette))
     })
-  })
+
+    describe("GET /api/v1/palettes", () => {
+      it("should return a 200 and all palettes", async () => {
+        const expectedPalette = await database('palettes').select()
+
+        const res = await request(app).get('/api/v1/palettes');
+        const palettes = res.body;
+
+        expect(res.status).toBe(200)
+        expect(JSON.stringify(palettes)).toEqual(JSON.stringify(expectedPalette))
+      })
+    })
 
   describe("GET /api/v1/palettes/:id", () => {
     it("should return a 200 and a single palette if the id exists", async () => {
@@ -307,4 +309,6 @@ describe("Server", () => {
       expect(res.body.error).toBe(`Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. You're missing a \"color1\" property.`)
     })
   })
-});
+})
+
+  })

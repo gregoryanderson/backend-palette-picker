@@ -7,7 +7,7 @@ const cors = require('cors')
 
 app.locals.title = "Palette Picker";
 
-app.use(cors())
+// app.use(cors())
 app.use(express.json())
 
 app.get("/api/v1/folders", (request, response) => {
@@ -137,7 +137,7 @@ app.get("/api/v1/folders", (request, response) => {
         }
       })
       .catch(error => {
-        response.status(500).send({ error });
+        response.status(500).json({ error });
       });
   });
   
@@ -152,16 +152,16 @@ app.get("/api/v1/folders", (request, response) => {
       "name"
     ]) {
       if (!request.body[requiredParameter]) {
-        return response.status(422).send({
+        return response.status(422).json({
           error: `Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. You're missing a "${requiredParameter}" property.`
         });
       }
-      database("palettes")
-        .where("id", request.params.id)
-        .update({ ...request.body })
-        .then(() => response.status(202).json({ id: request.params.id }))
-        .catch(error => response.status(500).json({ error }));
     }
+        database("palettes")
+          .where("id", request.params.id)
+          .update({ ...request.body })
+          .then(() => response.status(202).json({ id: request.params.id }))
+          .catch(error => response.status(500).json({ error }));
   });
   
   app.patch('/api/v1/folders/:id', (request, response) => {
