@@ -41,6 +41,17 @@ module.exports = {
     migrations: {
       tableName: 'knex_migrations'
     }
-  }
+  },
 
+  test: {
+    client: 'pg',
+    connection: 'postgres://localhost/palettepicker_test',
+    migrations: {
+      directory: './db/migrations'
+    },
+    seeds: {
+      directory: './db/seeds/test'
+    },
+    useNullAsDefault: true,
+  },
 };

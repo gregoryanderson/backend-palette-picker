@@ -10,7 +10,7 @@ app.set("port", process.env.PORT || 3000);
 // });
 
 app.listen(app.get("port"), () => {
-  console.log(`${app.locals.title} is running. Hooray!`);
+  console.log(`${app.locals.title} is running on . Hooray!`);
 });
 
 // //get all folders

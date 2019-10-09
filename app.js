@@ -1,5 +1,4 @@
 const express = require('express');
-// const bodyParser = require('body-parser');
 const app = express();
 const environment = process.env.NODE_ENV || 'development'
 const configuration = require('./knexfile')[environment]
@@ -8,12 +7,9 @@ const cors = require('cors')
 
 app.locals.title = "Palette Picker";
 
-//leta said something about express.json
-
 app.use(cors())
 app.use(express.json())
 
-//get all folders
 app.get("/api/v1/folders", (request, response) => {
     database("folders")
       .select()
@@ -25,7 +21,6 @@ app.get("/api/v1/folders", (request, response) => {
       });
   });
   
-  //get all palettes
   app.get("/api/v1/palettes", (request, response) => {
     database("palettes")
       .select()
@@ -37,49 +32,50 @@ app.get("/api/v1/folders", (request, response) => {
       });
   });
   
-  //get specific folder
-  app.get("/api/v1/folders/:id", (request, response) => {
-    database("folders")
-      .where("id", request.params.id)
-      .select()
-      .then(folder => {
-        response.status(200).json(folder);
+  app.get('/api/v1/folders/:id', (request, response) => {
+    database('folders').where('id', request.params.id).select()
+      .then(folders => {
+        if (folders.length) {
+          response.status(200).json(folders);
+        } else {
+          response.status(404).json({
+            error: `Could not find folder with id ${request.params.id}`
+          })
+        }
       })
       .catch(error => {
-        response.status(500).json({
-          error: `Could not find folder with id of ${request.params.id}`
-        });
-      });
-  });
+        response.status(500).json({ error });
+      })
+  })
   
-  //get a specific palette
-  app.get("/api/v1/palettes/:id", (request, response) => {
-    database("palettes")
-      .where("id", request.params.id)
-      .select()
-      .then(palette => {
-        response.status(200).json(palette);
+  app.get('/api/v1/palettes/:id', (request, response) => {
+    database('palettes').where('id', request.params.id).select()
+      .then(palettes => {
+        if (palettes.length) {
+          response.status(200).json(palettes);
+        } else {
+          response.status(404).json({
+            error: `Could not find folder with id ${request.params.id}`
+          })
+        }
       })
       .catch(error => {
-        response.status(500).json({
-          error: `Could not find palette with id of ${request.params.id}`
-        });
-      });
-  });
-  
-  //post to folders
+        response.status(500).json({ error });
+      })
+  })
+
   app.post("/api/v1/folders", (request, response) => {
     const folder = request.body;
-    for (let requiredParameter of ["folder"]) {
+    for (let requiredParameter of ["name"]) {
       if (!folder[requiredParameter]) {
         return response.status(422).send({
-          error: `Expected format: { folder: <String> }. You're missing a "${requiredParameter}" property.`
+          error: `Expected format: { name: <String> }. You're missing a "${requiredParameter}" property.`
         });
       }
     }
   });
   
-  //post to palettes
+
   app.post("/api/v1/palettes", (request, response) => {
     const folder = request.body;
     for (let requiredParameter of [
@@ -88,22 +84,18 @@ app.get("/api/v1/folders", (request, response) => {
       "color2",
       "color3",
       "color4",
-      "color5"
+      "color5",
+      "name"
     ]) {
       if (!folder[requiredParameter]) {
         return response.status(422).send({
-          error: `Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, }. You're missing a "${requiredParameter}" property.`
+          error: `Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. You're missing a "${requiredParameter}" property.`
         });
       }
     }
   });
-  
-  //this will delete one folder
-  
-  //probably need to first go into palette and delete palettes with matching id first and then remove folder
+    
   app.delete("/api/v1/folders/:id", (request, response) => {
-    //database('palettes').where('folder_id, request.params.id).del()
-    //.then
     database("folders")
       .where("id", request.params.id)
       .del()
@@ -123,7 +115,6 @@ app.get("/api/v1/folders", (request, response) => {
       });
   });
   
-  //this function will delete a palette
   app.delete("/api/v1/palettes/:id", (request, response) => {
     database("palettes")
       .where("id", request.params.id)
@@ -144,7 +135,6 @@ app.get("/api/v1/folders", (request, response) => {
       });
   });
   
-  //this function MIGHT patch a palette
   app.patch("/api/v1/palettes/:id", (request, response) => {
     for (let requiredParameter of [
       "folder_id",
@@ -152,23 +142,22 @@ app.get("/api/v1/folders", (request, response) => {
       "color2",
       "color3",
       "color4",
-      "color5"
+      "color5",
+      "name"
     ]) {
       if (!request.body[requiredParameter]) {
         return response.status(422).send({
-          error: `Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, }. You're missing a "${requiredParameter}" property.`
+          error: `Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. You're missing a "${requiredParameter}" property.`
         });
       }
       database("palettes")
         .where("id", request.params.id)
         .update({ ...request.body })
-        //it feels like I should just fire this
         .then(() => response.status(202).json({ id: request.params.id }))
         .catch(error => response.status(500).json({ error }));
     }
   });
   
-  //this function MIGHT patch a folder
   app.patch('/api/v1/folders/:id', (request, response) => {
       for (let requiredParameter of [
           'name'
@@ -181,7 +170,6 @@ app.get("/api/v1/folders", (request, response) => {
           database("folders")
           .where("id", request.params.id)
           .update({...request.body })
-          //it feels like I should just fire this
           .then(() => response.status(202).json({id: request.params.id}))
           .catch(error => response.status(500).json({error}))
       }
