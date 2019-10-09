@@ -168,15 +168,15 @@ app.get("/api/v1/folders", (request, response) => {
       for (let requiredParameter of [
           'name'
       ]) {
-          if(!request.body.palette[requiredParameter]) {
+          if(!request.body[requiredParameter]) {
               return response.status(422).send({
-                  error: `Expected format { name: <String>. Your missing a ${requiredParameter} property}`
+                  error: `Expected format { name: <String>. You are missing a ${requiredParameter} property}`
               })
           }
           database("folders")
           .where("id", request.params.id)
           .update({...request.body })
-          .then(() => response.status(202).json({id: request.params.id}))
+          .then(() => response.status(202).json({id: parseInt(request.params.id)}))
           .catch(error => response.status(500).json({error}))
       }
   })

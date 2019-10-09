@@ -104,6 +104,19 @@ describe("Server", () => {
       
     })
     
+    it('should update the database if deletion is successful', async () => {
+      let allFoldersInitial = await database('folders').select();
+      let folderToDelete = allFoldersInitial[0];
+      let id = folderToDelete.id
+    
+      
+      const res = await request(app).delete(`/api/v1/folders/${id}`)
+
+      const allFoldersFinal = await database('folders').select();
+
+      expect(allFoldersFinal.includes(folderToDelete)).toEqual(false)
+    })
+
     it('should return a 200 status and confirmation message if a folder without palettes is deleted', async () => {
 
       // response from posting an empty folder
@@ -137,5 +150,54 @@ describe("Server", () => {
     })
   })
 
-  describe('PATCH /api/v1/folders/:id')
+  describe('PATCH /api/v1/folders/:id', () => {
+    beforeEach(async () => {
+      await database.seed.run();
+    });
+
+    it('should return a 202 status with the id of the edited folder when successful', async () => {
+
+      let allFoldersInitial = await database('folders').select();
+      let folderToUpdate = allFoldersInitial[0];
+      let id = parseInt(folderToUpdate.id);
+      let newFolderInfo = { name: 'NEW NAME'};
+
+      let response = await request(app).patch(`/api/v1/folders/${id}`).send(newFolderInfo)
+
+      expect(response.status).toBe(202);
+
+      expect(response.body).toEqual({ id: id })
+
+    })
+
+    it('should update the database with information when successful', async () => {
+
+      let allFoldersInitial = await database('folders').select();
+      let folderToUpdate = allFoldersInitial[0];
+      let id = parseInt(folderToUpdate.id);
+      let newFolderInfo = { name: 'NEW NAME'};
+
+      let response = await request(app).patch(`/api/v1/folders/${id}`).send(newFolderInfo)
+
+      let updatedFolder = await database('folders').where('id', id).first();
+
+      expect(updatedFolder.name).toEqual(newFolderInfo.name)
+
+    })
+
+    it('should return a 422 status with message if name parameter is missing', async () => {
+
+      
+      let allFoldersInitial = await database('folders').select();
+      let folderToUpdate = allFoldersInitial[0];
+      let id = parseInt(folderToUpdate.id);
+      let newFolderInfo = { name: false };
+
+      let response = await request(app).patch(`/api/v1/folders/${id}`).send(newFolderInfo)
+
+      expect(response.status).toBe(422);
+      expect(response.body.error).toEqual(`Expected format { name: <String>. You are missing a name property}`)
+
+    })
+  })
 });
