@@ -17,7 +17,7 @@ app.get("/api/v1/folders", (request, response) => {
         response.status(200).json(folders);
       })
       .catch(error => {
-        response.status(500).json({ error });
+        response.status(404).json({ error });
       });
   });
   
@@ -55,7 +55,7 @@ app.get("/api/v1/folders", (request, response) => {
           response.status(200).json(palettes);
         } else {
           response.status(404).json({
-            error: `Could not find folder with id ${request.params.id}`
+            error: `Could not find palette with id ${request.params.id}`
           })
         }
       })
@@ -90,9 +90,9 @@ app.get("/api/v1/folders", (request, response) => {
       "color5",
       "name"
     ]) {
-      if (!palette[requiredParameter]) {
+      if (palette[requiredParameter] === undefined) {
         return response.status(422).send({
-          error: `Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. You're missing a "${requiredParameter}" property.`
+          error: `Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. Youre missing a "${requiredParameter}" property.`
         });
       }
     }
@@ -133,7 +133,7 @@ app.get("/api/v1/folders", (request, response) => {
         } else {
           response
             .status(404)
-            .send(`Could not find palette with the id of ${request.params.id}`);
+            .json(`Could not find palette with the id of ${request.params.id}`);
         }
       })
       .catch(error => {
