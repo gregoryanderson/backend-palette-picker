@@ -101,24 +101,24 @@ app.get("/api/v1/folders", (request, response) => {
     .catch(error => response.status(500).json({error}))
   });
     
-  app.delete("/api/v1/folders/:id", (request, response) => {
-    database("folders")
-      .where("id", request.params.id)
-      .del()
+  app.delete("/api/v1/folders/:id", async (request, response) => {
+
+    let id = request.params.id;
+    
+    database("palettes").where('folder_id', id).del()
       .then(res => {
-        if (res) {
-          response
-            .status(200)
-            .send(`Folder with the id of ${request.params.id} has been deleted`);
-        } else {
-          response
-            .status(404)
-            .send(`Could not find folder with the id of ${request.params.id}`);
-        }
+          database("folders").where("id", id).del().then(res => {
+            if (res) {
+              response.status(200).json(`Folder with the id of ${id} has been deleted.`)
+            } else {
+              response.status(404).json({ error: `Could not find folder with the id of ${id}`})
+            }
+          })
       })
       .catch(error => {
-        response.status(500).send({ error });
-      });
+        response.status(500).send({ error })
+      })
+
   });
   
   app.delete("/api/v1/palettes/:id", (request, response) => {
@@ -129,7 +129,7 @@ app.get("/api/v1/folders", (request, response) => {
         if (res) {
           response
             .status(200)
-            .send(`Palette with the id of ${request.params.id} has been deleted`);
+            .json(`Palette with the id of ${request.params.id} has been deleted`);
         } else {
           response
             .status(404)
