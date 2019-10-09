@@ -73,11 +73,14 @@ app.get("/api/v1/folders", (request, response) => {
         });
       }
     }
+    database('folders').insert(folder, 'id')
+    .then(folderId => response.status(201).json({id: folderId[0]}))
+    .catch(error => response.status(500).json({error}))
   });
   
 
   app.post("/api/v1/palettes", (request, response) => {
-    const folder = request.body;
+    const palette = request.body;
     for (let requiredParameter of [
       "folder_id",
       "color1",
@@ -87,12 +90,15 @@ app.get("/api/v1/folders", (request, response) => {
       "color5",
       "name"
     ]) {
-      if (!folder[requiredParameter]) {
+      if (!palette[requiredParameter]) {
         return response.status(422).send({
           error: `Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. You're missing a "${requiredParameter}" property.`
         });
       }
     }
+    database('palettes').insert(palette, 'id')
+    .then(paletteId => response.status(201).json({id: paletteId[0]}))
+    .catch(error => response.status(500).json({error}))
   });
     
   app.delete("/api/v1/folders/:id", (request, response) => {
