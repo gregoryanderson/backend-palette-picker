@@ -176,7 +176,7 @@ app.get("/api/v1/folders", (request, response) => {
           database("folders")
           .where("id", request.params.id)
           .update({...request.body })
-          .then(() => response.status(202).json({id: request.params.id}))
+          .then(() => response.status(202).json({id: parseInt(request.params.id)}))
           .catch(error => response.status(500).json({error}))
       }
   })

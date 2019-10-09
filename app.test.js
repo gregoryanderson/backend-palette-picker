@@ -72,9 +72,7 @@ describe("Server", () => {
       const folder = await database('folders').first()
       const newPalette = {folder_id: folder.id, color2: "blue", color3: "purple", color4: "white", color5: "blue", name: "Pumpkin Spice"}
 
-      const res = await request(app)
-        .post('/api/v1/palettes')
-        .send(newPalette)
+      const res = await request(app).post('/api/v1/palettes').send(newPalette)
 
       expect(res.status).toBe(422)
       expect(res.body.error).toBe('Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. Youre missing a "color1" property.')
@@ -102,7 +100,29 @@ describe("Server", () => {
     })
   })
 
-  describe("PATCH /api/v1/palettes", () => {
-    it("should ")
+  describe("PATCH /api/v1/palettes/:id", () => {
+    it("should patch a palette from the palettes and send back a 200 code", async() => {
+      let folder = await database('folders').select().first()
+      let palette = await database('palettes').select().first()
+      let paletteId = palette.id; 
+      let newPalette = {folder_id: folder.id, color1: "brown", color2: "blue", color3: "purple", color4: "white", color5: "blue", name: "Pumpkin Spice"}
+
+      const res = await request(app).patch(`/api/v1/palettes/${paletteId}`).send(newPalette)
+
+      expect(res.status).toBe(202)
+      expect(res.body.id).toEqual(JSON.stringify(paletteId))
+    })
+
+    it("should throw an error message and a 422 status if requirements have not been met", async() => {
+      let folder = await database('folders').select().first()
+      let palette = await database('palettes').select().first()
+      let paletteId = palette.id; 
+      let newPalette = {folder_id: folder.id, color2: "blue", color3: "purple", color4: "white", color5: "blue", name: "Pumpkin Spice"}  
+      
+      const res = await request(app).patch(`/api/v1/palettes/${paletteId}`).send(newPalette)
+
+      expect(res.status).toBe(422)
+      expect(res.body.error).toBe(`Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. You're missing a \"color1\" property.`)
+    })
   })
 });
