@@ -16,7 +16,7 @@ describe("Server", () => {
     });
   });
 
-  describe("GET /folders", () => {
+  describe("GET /api/v1/folders", () => {
     it('should return a 200 and all of the folders', async () => {
       const expectedFolders = await database('folders').select();
 
@@ -30,7 +30,7 @@ describe("Server", () => {
     })
   })
 
-  describe('GET /folders/:id', () => {
+  describe('GET /api/v1/folders/:id', () => {
     it('should return a 200 and a single folder if the folder exists', async () => {
       const expectedFolder = await database('folders').first();
       const id = expectedFolder.id;
@@ -53,7 +53,7 @@ describe("Server", () => {
     })
   })
 
-  describe('POST /folders', () => {
+  describe('POST /api/v1/folders', () => {
     
     beforeEach(async () => {
       await database.seed.run()
@@ -82,7 +82,7 @@ describe("Server", () => {
   })
 
 
-  describe('DELETE /folders', () => {
+  describe('DELETE /api/v1/folders', () => {
 
     beforeEach(async () => {
       await database.seed.run()
@@ -136,4 +136,6 @@ describe("Server", () => {
       
     })
   })
+
+  describe('PATCH /api/v1/folders/:id')
 });
