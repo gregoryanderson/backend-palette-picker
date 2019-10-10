@@ -37,7 +37,7 @@ module.exports = {
       directory: './db/migrations'
     },
     useNullAsDefault: true
-  }
+  },
 
   test: {
     client: 'pg',
