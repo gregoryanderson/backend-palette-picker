@@ -1,6 +1,5 @@
 const request = require('supertest')
 const app = require('./app')
-// import 'regenerator-runtime/runtime'
 const environment = process.env.NODE_ENV || "development";
 const configuration = require("./knexfile")[environment];
 const database = require("knex")(configuration);
@@ -30,6 +29,29 @@ describe("Server", () => {
       expect(folders[0].id).toEqual(expectedFolders[0].id)
       expect(folders[0].name).toEqual(expectedFolders[0].name)
 
+    })
+    it('should return a 200 and a specific folder that matches the "name" query parameter', async() => {
+      const expectedFolder = await database('folders').first()
+      
+      const res = await request(app).get(`/api/v1/folders?name=${expectedFolder.name}`)
+      const folders = res.body;
+  
+
+      expect(res.status).toBe(200)
+      expect(folders[0].id).toEqual(expectedFolder.id)
+      expect(folders[0].name).toEqual(expectedFolder.name)
+    })
+
+    it('should return a 404 status with an error is there is no folder found', async() => {
+      const badName = 'pants'
+      
+      const res = await request(app).get(`/api/v1/folders?name=${badName}`)
+      const folders = res.body;
+      console.log('brianna', folders)
+  
+
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe(`Could not find folder with name ${badName}`)
     })
   })
 
