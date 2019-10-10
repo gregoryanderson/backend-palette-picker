@@ -47,7 +47,6 @@ describe("Server", () => {
       
       const res = await request(app).get(`/api/v1/folders?name=${badName}`)
       const folders = res.body;
-      console.log('brianna', folders)
   
 
       expect(res.status).toBe(404)
