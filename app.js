@@ -11,14 +11,27 @@ app.locals.title = "Palette Picker";
 app.use(express.json())
 
 app.get("/api/v1/folders", (request, response) => {
-    database("folders")
-      .select()
+
+    if (request.query.name) {
+      let lowercase = request.query.name.toLowerCase()
+      database("folders").whereRaw('LOWER(name) LIKE ?',  lowercase)
       .then(folders => {
         response.status(200).json(folders);
       })
       .catch(error => {
-        response.status(404).json({ error });
-      });
+        response.status(404).json({ error })
+      })
+    }  else {
+      database("folders")
+        .select()
+        .then(folders => {
+          response.status(200).json(folders);
+        })
+        .catch(error => {
+          response.status(404).json({ error });
+        });
+    }
+
   });
   
   app.get("/api/v1/palettes", (request, response) => {
