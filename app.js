@@ -16,9 +16,7 @@ app.get("/api/v1/folders", (request, response) => {
     database("folders")
       .whereRaw("LOWER(name) LIKE ?", lowercase)
       .then(folders => {
-        console.log('folder', folders)
         if (folders.length === 0) {
-          console.log(folders, 'inside empty array folders block')
           return response.status(404).json({error: `Could not find folder with name ${request.query.name}`})
         } else {
           response.status(200).json(folders);
