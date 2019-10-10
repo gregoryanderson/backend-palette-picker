@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll --forceExit",
-    "start": "nodemon server.js"
+    "test": "jest --forceExit",
+    "start": "node server.js",
+    "test:watch": "jest --watchAll"
   },
   "keywords": [],
   "author": "",
