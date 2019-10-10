@@ -7,7 +7,7 @@ const cors = require("cors");
 
 app.locals.title = "Palette Picker";
 
-// app.use(cors())
+app.use(cors())
 app.use(express.json());
 
 app.get("/api/v1/folders", (request, response) => {
