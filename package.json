@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll --exit",
+    "test": "jest --watchAll --forceExit",
     "start": "nodemon server.js"
   },
   "keywords": [],
