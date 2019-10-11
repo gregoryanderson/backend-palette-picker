@@ -97,7 +97,15 @@ Returns an array containing folder matching the `id` parameter
 
 ```
 
+##### Error
 
+`Status: 404 Not Found`
+
+```json
+{
+    "error": "Could not find folder with id 9"
+}
+```
 
 ---
 #### Find specific folder by name
@@ -119,6 +127,7 @@ GET /api/v1/folders?name=[search term]
 
 Returns an array containing the folder with a name matching the search term in request
 
+`Status: 200 OK`
 
 ```json
 [
@@ -130,6 +139,16 @@ Returns an array containing the folder with a name matching the search term in r
     }
 ]
 
+```
+
+##### Error
+
+`Status: 404 Not Found`
+
+```json
+{
+    "error": "Could not find folder with name Winter Palettes"
+}
 ```
 
 ----
@@ -158,6 +177,21 @@ Returns an object with the id of the newly-created folder
 }
 ```
 
+##### Error
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/v1/folders/3</pre>
+</body>
+</html>
+```
+
 
 ----
 #### Edit existing folder
@@ -184,6 +218,13 @@ Returns object with id of edited folder.
 }
 ```
 
+##### Error 
+
+`Status: 422 Unprocessable Entry`
+
+```json
+{"error":"Expected format { name: <String>. You are missing a name property}"}
+```
 
 ---
 #### Delete folder
@@ -200,7 +241,13 @@ DELETE /api/v1/folders/:id
 "Folder with the id of 6 has been deleted."
 ```
 
+##### Error
 
+`Status: 404 Not Found`
+
+```json
+{"error":"Could not find folder with the id of 399"}
+```
 
 
 
@@ -305,7 +352,14 @@ Returns array containing palette that matches id in request
     }
 ]
 ```
+##### Error
+`Status: 404 Not Found`
 
+```json
+{
+    "error": "Could not find palette with id 300"
+}
+```
 
 ----
 #### Add new palette
@@ -337,13 +391,22 @@ Returns id of newly-created palette
     "id": 7
 }
 ```
+##### Error
+
+`Status: 422 Unprocessable Entry`
+
+```json
+{
+    "error": "Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. Youre missing a \"folder_id\" property."
+}
+```
 
 ---
 
 #### Edit existing palette
 
 ```
-GET /api/v1/palettes/:id
+PATCH /api/v1/palettes/:id
 ```
 
 ##### Input
@@ -370,13 +433,24 @@ Returns object containing id of successfully-updated palette
 }
 ```
 
+##### Error
+
+`Status: 422 Unprocessable Entry`
+
+```json
+{
+    "error": "Expected format: { folder_id: <String>, color1: <Number>, color2: <Number>, color3: <Number>, color4: <Number>, color5: <Number>, name: <String> }. You're missing a \"folder_id\" property."
+}
+```
+
+
 
 ---
 
 #### Delete palette
 
 ```
-GET /api/v1/palettes/:id
+DELETE /api/v1/palettes/:id
 ```
 
 ##### Response
@@ -385,4 +459,12 @@ GET /api/v1/palettes/:id
 
 ```
 "Palette with the id of 7 has been deleted"
+```
+
+##### Error
+
+`Status: 402 Not Found`
+
+```json
+"Could not find palette with the id of 3999"
 ```
